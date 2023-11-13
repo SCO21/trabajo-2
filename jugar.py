@@ -4,7 +4,7 @@ from wordle import Wordle
 from letra_correcta import LetraCorrecta
 from colorama import Fore #sirve para cambiar el color del texto de la terminal
 import random
-
+print("Bienvenido a Wordle\n")
 print("Ingresa la longitud de la palabra que quieres adivinar! (4 a 8)")
 C = int(input())
 
