@@ -52,7 +52,7 @@ agra
 agre
 agro
 agua
-agüe
+ague
 aguo
 agur
 aina
@@ -1004,10 +1004,10 @@ grui
 guao
 guau
 guay
-güey
+guey
 guia
 guie
-güin
+guin
 guio
 guja
 gula

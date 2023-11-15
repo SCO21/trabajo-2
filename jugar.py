@@ -39,6 +39,10 @@ def main():
         word_set = load_word_set("lema8.txt")
         secret = random.choice(list(word_set))
         wordle = Wordle(secret, C)  
+    else:
+        print(Fore.RED+"opción invalida"+ Fore.RESET)
+        return
+        
         
     while wordle.puede_intentar:
         x = input("\nIngresa tu intento: ")
@@ -47,7 +51,7 @@ def main():
             print(Fore.RED + f"La palabra debe ser de {C} letras" + Fore.RESET)
             continue
         if x not in word_set:
-            print(Fore.RED + f"La palabra no esta en el lemario" + Fore.RESET)
+            print(Fore.RED + "La palabra no esta en el lemario" + Fore.RESET)
             continue
         wordle.intento(x)
         resultados_en_pantalla(wordle)
@@ -101,4 +105,4 @@ def dibujar_borde(lines: List[str], size:int = 2*C - 1, pad: int = 1):
 
 
 if __name__ == "__main__":
-    main()
+        main()
