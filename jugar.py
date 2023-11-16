@@ -1,79 +1,72 @@
-
 from typing import List
 from wordle import Wordle
 from letra_correcta import LetraCorrecta
 from colorama import Fore #sirve para cambiar el color del texto de la terminal
 import random
 print("Bienvenido a Wordle\n")
-print("Ingresa la longitud de la palabra que quieres adivinar! (4 a 8)")
-C = int(input())
 
-#carga un conjunto (set) de palabras desde un archivo de texto especificado por la ruta path.     
+ACIERTOS = 0
+FALLOS = 0
+
 def load_word_set(path: str):
     word_set = set()
-    with open(path,"r") as f:
+    with open(path, "r", encoding="utf-8") as f:
         for line in f.readlines():
             word = line.strip().upper()
             word_set.add(word)
     return word_set
+
 def main():
-    word_set = load_word_set("lema4.txt")  # Asigna un valor predeterminado a word_set
-    wordle = None
-    if C == 4:
-        word_set = load_word_set("lema4.txt")
-        secret = random.choice(list(word_set))
-        wordle = Wordle(secret, C)
-    elif C==5:
-        word_set = load_word_set("lema5.txt")
-        secret = random.choice(list(word_set))
-        wordle = Wordle(secret, C)
-    elif C==6:
-        word_set = load_word_set("lema6.txt")
-        secret = random.choice(list(word_set))
-        wordle = Wordle(secret, C)
-    elif C==7:
-        word_set = load_word_set("lema7.txt")
-        secret = random.choice(list(word_set))
-        wordle = Wordle(secret, C)
-    elif C==8:
-        word_set = load_word_set("lema8.txt")
-        secret = random.choice(list(word_set))
-        wordle = Wordle(secret, C)  
-    else:
-        print(Fore.RED+"opción invalida"+ Fore.RESET)
-        return
-        
-        
+    global ACIERTOS, FALLOS
+    print("Ingresa la longitud de la palabra que quieres adivinar! (4 a 8)")
+
+    while True:
+        try:
+            C = int(input())
+            break
+        except ValueError:
+            print(Fore.RED + "Error: Ingresa un número entero válido." + Fore.RESET)
+
+    word_set = load_word_set(f"lema{C}.txt")
+    wordle = Wordle(random.choice(list(word_set)), C)
+
     while wordle.puede_intentar:
-        x = input("\nIngresa tu intento: ")
-        x = x.upper()
+        x = input("\nIngresa tu intento: ").upper()
         if len(x) != C:
             print(Fore.RED + f"La palabra debe ser de {C} letras" + Fore.RESET)
             continue
         if x not in word_set:
-            print(Fore.RED + "La palabra no esta en el lemario" + Fore.RESET)
+            print(Fore.RED + "La palabra no está en el lemario" + Fore.RESET)
             continue
         wordle.intento(x)
         resultados_en_pantalla(wordle)
-        
+
     if wordle.resuelto:
         print("Palabra correcta")
+        ACIERTOS += 1
     else:
-        print("La palabra correcta era", secret)
+        print("La palabra correcta era", wordle.secret)
+        FALLOS += 1
+
+    print("\n" + Fore.GREEN + "Aciertos " + Fore.RESET + f"{ACIERTOS}" + Fore.RED + " Fallos " + Fore.RESET + f"{FALLOS}")
+
+    volver_a_jugar = input("\n¿Quieres volver a jugar? Y/N: ")
+    if volver_a_jugar.lower() == "y":
+        main()
+    else:
+        print("\n¡Gracias por jugar!")
+
 
 def resultados_en_pantalla(wordle: Wordle):
-    print(f"\ntienes {wordle.intentos_restantes} itentos restantes")
-    
+    print(f"\ntienes {wordle.intentos_restantes} intentos restantes")
     lines = []
     for word in wordle.intentos:
         result = wordle.guess(word)
         color_final = convertir_a_color(result)
         lines.append(color_final)
-    for _ in range (wordle.intentos_restantes):
-        lines.append(" " .join( ["_"] * wordle.longitud_palabra))
-    
-    dibujar_borde(lines)
-
+    for _ in range(wordle.intentos_restantes):
+        lines.append(" " .join(["_"] * wordle.longitud_palabra))
+    dibujar_borde(lines, wordle.longitud_palabra)
 
 
 def convertir_a_color(result: List[LetraCorrecta]):
@@ -89,20 +82,16 @@ def convertir_a_color(result: List[LetraCorrecta]):
         resultado_coloreado.append(letra_coloreada)
     return " ".join(resultado_coloreado)
 
-def dibujar_borde(lines: List[str], size:int = 2*C - 1, pad: int = 1):
-    
-    contenido_total = size + pad * 2
-    borde_superior = "┌" + "─" *contenido_total + "┐"
-    borde_inferior = "└" + "─" *contenido_total + "┘"
+
+def dibujar_borde(lines: List[str], longitud_palabra: int, pad: int = 1):
+    contenido_total = 2 * longitud_palabra - 1 + pad * 2
+    borde_superior = "┌" + "─" * contenido_total + "┐"
+    borde_inferior = "└" + "─" * contenido_total + "┘"
     print(borde_superior)
-    
     for linea in lines:
         print("│", linea, "│")
-        
     print(borde_inferior)
 
 
-
-
 if __name__ == "__main__":
-        main()
+    main()
