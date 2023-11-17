@@ -22,7 +22,12 @@ def main():
 
     while True:
         try:
-            C = int(input())
+            C = input()
+            if 4<=int(C)<=8:
+                C = int(C)
+            else:
+                print("Su entrada se encuentra fuera del rango. Vuelve a intentarlo: ")
+                continue
             break
         except ValueError:
             print(Fore.RED + "Error: Ingresa un número entero válido." + Fore.RESET)
